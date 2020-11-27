@@ -1,6 +1,10 @@
 @page "/build"
 <h3>Build</h3>
-
+<button class="btn btn-info" @onclick="() => EatBananas(10)">Eat Bananas</button>
 @code {
-    
+
+    private void EatBananas(int amount)
+    {
+        Console.WriteLine($"{amount} Bananas Eaten");
+    }    
 }
