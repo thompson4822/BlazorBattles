@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BlazorBattles.Shared.Entities;
+using Blazored.Toast.Services;
 
 namespace BlazorBattles.Client.Services
 {
@@ -19,7 +20,7 @@ namespace BlazorBattles.Client.Services
         
         /// <summary>What units do I currently have (what is my army)?</summary>
         IList<UserUnit> MyUnits { get; set; }
-        
+
         /// <summary>
         /// Add a unit to the army using the given unit id
         /// </summary>
@@ -37,6 +38,12 @@ namespace BlazorBattles.Client.Services
 
     class UnitService : IUnitService
     {
+        private readonly IToastService _toastService;
+
+        public UnitService(IToastService toastService)
+        {
+            _toastService = toastService;
+        }
         public IList<Unit> Units { get; } = new List<Unit>
         {
             new Unit {Id = 1, Title = "Knight", Attack = 10, Defense = 10, BananaCost = 100},
@@ -63,6 +70,7 @@ namespace BlazorBattles.Client.Services
         {
             var unit = UnitFor(unitId);
             MyUnits.Add(new UserUnit { UnitId = unit.Id, HitPoints = unit.HitPoints });
+            _toastService.ShowSuccess($"Your {unit.Title} has been built", "Unit Built");
         }
     }
 }
