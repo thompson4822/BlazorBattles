@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BlazorBattles.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,9 +25,9 @@ namespace BlazorBattles.Server.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUnits()
+        public async Task<IActionResult> GetUnits()
         {
-            return Ok(Units);
+            return await Task.Run(() => Ok(Units));
         }
     }
 }
