@@ -2,7 +2,8 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1>Hi, @context.User.Identity.Name. Welcome back!</h1>
+        @* Note that the name comes from the CustomAuthStateProvider *@
+        <h1>Hi, @(context.User.Identity.Name). Welcome back!</h1>
         Let's admire <NavLink href="army">your beloved army.</NavLink>
     </Authorized>
     <NotAuthorized>
