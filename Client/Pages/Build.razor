@@ -28,6 +28,11 @@
 @code {
     private int _selectedUnitId = 1;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await UnitService.LoadUnitsAsync();
+    }
+
     public void BuildUnit()
     {
         var selectedUnit = UnitFor(_selectedUnitId);
@@ -41,8 +46,11 @@
     }
 
     private Unit UnitFor(int unitId) => UnitService.UnitFor(unitId);
+
+    private bool NotEnoughBananas()
+    {
+        return UnitService.Units.Count != 0 && UnitFor(_selectedUnitId).BananaCost > BananaService.Bananas; 
+    }
     
-    private bool NotEnoughBananas() => 
-        UnitFor(_selectedUnitId).BananaCost > BananaService.Bananas;
 
 }

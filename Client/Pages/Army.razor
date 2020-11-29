@@ -5,19 +5,29 @@
 
 <h3>Army</h3>
 
-@foreach (var userUnit in UnitService.MyUnits)
+@if (UnitService.Units.Count != 0)
 {
-    <div class="army-list">
-        <div>
-            <img src="@UnitService.IconFor(userUnit)"> 
+    foreach (var userUnit in UnitService.MyUnits)
+    {
+        <div class="army-list">
+            <div>
+                <img src="@UnitService.IconFor(userUnit)"> 
+            </div>
+            <div>@UnitService.UnitFor(userUnit.UnitId).Title</div>
+            <div>@userUnit.HitPoints HP</div>
         </div>
-        <div>@UnitService.UnitFor(userUnit.UnitId).Title</div>
-        <div>@userUnit.HitPoints HP</div>
-    </div>
+    }
+}
+else
+{
+    <h3>Loading...</h3>
 }
 
 @code {
 
-    
+    protected override async Task OnInitializedAsync()
+    {
+        await UnitService.LoadUnitsAsync();
+    }
 
 }

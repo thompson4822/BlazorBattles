@@ -76,6 +76,11 @@
 @code {
     private UserRegister _userRegister = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await UnitService.LoadUnitsAsync();
+    }
+
     void HandleRegistration()
     {
         NavigationManager.NavigateTo("login");
