@@ -4,6 +4,9 @@
 @inject IUnitService UnitService
 @inject IToastService ToastService
 
+@* We have to be authorized to view this page *@
+@attribute [Authorize]
+
 <h3>Build</h3>
 
 <div class="form-group">
