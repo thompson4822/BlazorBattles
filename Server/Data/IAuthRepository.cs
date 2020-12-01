@@ -24,40 +24,30 @@ namespace BlazorBattles.Server.Data
         {
             if (await UserExists(user.Email))
             {
-                return new ServiceResponse<int>
-                {
-                    Success = false,
-                    Message = "User already exists"
-                };
+                return new ServiceResponse<int>(Data: 0, Message: "User already exists", false);
             }
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
             var protectedUser = user with { PasswordHash = passwordHash, PasswordSalt = passwordSalt};
             await _dataContext.Users.AddAsync(protectedUser);
             await _dataContext.SaveChangesAsync();
 
-            return new ServiceResponse<int> { Data = protectedUser.Id, Message = "Registration Successful"};
+            return new ServiceResponse<int>( Data: protectedUser.Id, Message: "Registration Successful");
         }
 
         public async Task<ServiceResponse<string>> Login(string email, string password)
         {
-            var response = new ServiceResponse<string>();
+            ServiceResponse<string> response;
             var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email.ToLower().Equals(email.ToLower()));
             if (user == null)
             {
-                response.Success = false;
-                response.Message = "User not found.";
+                return new ServiceResponse<string>("", "User not found.", false);
             }
             else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
-                response.Success = false;
-                response.Message = "Wrong password.";
-            }
-            else
-            {
-                response.Data = user.Id.ToString();
+                return new ServiceResponse<string>("", "Wrong password.", false);
             }
 
-            return response;
+            return new ServiceResponse<string>(user.Id.ToString(), "");
         }
 
         public async Task<bool> UserExists(string email)

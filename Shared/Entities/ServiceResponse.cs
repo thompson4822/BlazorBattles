@@ -1,9 +1,4 @@
 namespace BlazorBattles.Shared.Entities
 {
-    public class ServiceResponse<T>
-    {
-        public T Data { get; set; }
-        public bool Success { get; set; } = true;
-        public string Message { get; set; }
-    }
+    public record ServiceResponse<T>(T Data, string Message, bool Success = true);
 }
