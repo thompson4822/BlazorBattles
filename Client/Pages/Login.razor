@@ -33,7 +33,7 @@ Please log in below or <NavLink href="register">register</NavLink> for a new acc
         if (result.Success)
         {
             // We'll store that the user is authenticated
-            await LocalStorageService.SetItemAsync<bool>("isAuthenticated", true);
+            await LocalStorageService.SetItemAsync<string>("authToken", result.Data);
             // 
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
         }

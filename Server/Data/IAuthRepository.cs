@@ -1,6 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Emit;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using BlazorBattles.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorBattles.Server.Data
 {
@@ -14,10 +22,12 @@ namespace BlazorBattles.Server.Data
     class AuthRepository : IAuthRepository
     {
         private readonly DataContext _dataContext;
+        private readonly IConfiguration _configuration;
 
-        public AuthRepository(DataContext dataContext)
+        public AuthRepository(DataContext dataContext, IConfiguration configuration)
         {
             _dataContext = dataContext;
+            _configuration = configuration;
         }
         
         public async Task<ServiceResponse<int>> Register(User user, string password)
@@ -47,7 +57,7 @@ namespace BlazorBattles.Server.Data
                 return new ServiceResponse<string>("", "Wrong password.", false);
             }
 
-            return new ServiceResponse<string>(user.Id.ToString(), "");
+            return new ServiceResponse<string>(CreateToken(user), "");
         }
 
         public async Task<bool> UserExists(string email)
@@ -78,6 +88,26 @@ namespace BlazorBattles.Server.Data
                 }
                 return true;
             }
+        }
+
+        private string CreateToken(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName)
+            };
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
     }
 }

@@ -57,7 +57,7 @@
     
     private async Task Logout()
     {
-        await LocalStorageService.RemoveItemAsync("isAuthenticated");
+        await LocalStorageService.RemoveItemAsync("authToken");
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
         NavigationManager.NavigateTo("/");
     }
